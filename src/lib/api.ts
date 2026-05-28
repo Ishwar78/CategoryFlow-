@@ -1,7 +1,7 @@
 // Centralized API client for the Express backend.
 // Configure VITE_API_BASE_URL in your project env (e.g. https://yourapi.onrender.com)
 
-export const API_BASE = (import.meta.env.VITE_API_BASE_URL || "http://localhost:4000").replace(/\/$/, "");
+export const API_BASE = (import.meta.env.VITE_API_BASE_URL || "https://categoryflow.onrender.com").replace(/\/$/, "");
 const TOKEN_KEY = "lf.token";
 
 export const tokenStore = {
