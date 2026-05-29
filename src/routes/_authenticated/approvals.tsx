@@ -1,5 +1,5 @@
 import { createFileRoute, Navigate } from "@tanstack/react-router";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@/lib/query";
 import { api, type AppUser } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
 import { Check, X, Users, UserCheck } from "lucide-react";

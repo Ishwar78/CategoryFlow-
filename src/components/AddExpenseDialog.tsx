@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@/lib/query";
 import { api, type Expense } from "@/lib/api";
 import { useServerFn } from "@tanstack/react-start";
 import { ocrBill } from "@/lib/ocr.functions";

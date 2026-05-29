@@ -1,5 +1,5 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "@/lib/query";
 import { api, type Category, type Expense } from "@/lib/api";
 import { iconFor, colorFor } from "@/lib/categories";
 import { inr, fmtDate } from "@/lib/format";

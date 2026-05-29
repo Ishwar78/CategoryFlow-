@@ -2,7 +2,7 @@ import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
 import { LayoutDashboard, LogOut, Sparkles, Menu, X, CheckSquare } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { useAuth } from "@/lib/auth";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "@/lib/query";
 import { api, type Category } from "@/lib/api";
 import { iconFor } from "@/lib/categories";
 

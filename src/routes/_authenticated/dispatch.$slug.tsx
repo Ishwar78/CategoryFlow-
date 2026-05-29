@@ -1,5 +1,5 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@/lib/query";
 import { api, fileUrl, type Category, type Expense } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
 import { useMemo, useState } from "react";
