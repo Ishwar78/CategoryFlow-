@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { Link } from "react-router-dom";
 import { useQuery } from "@/lib/query";
 import { api, type Category, type Expense } from "@/lib/api";
 import { iconFor, colorFor } from "@/lib/categories";
@@ -10,11 +10,7 @@ import {
 import { exportExpensesToPDF, exportExpensesToExcel, filterByMonth } from "@/lib/exports";
 import { useMemo, useState } from "react";
 
-export const Route = createFileRoute("/_authenticated/dashboard")({
-  component: Dashboard,
-});
-
-function Dashboard() {
+export default function Dashboard() {
   const { data: cats } = useQuery({ queryKey: ["categories"], queryFn: () => api<Category[]>("/categories") });
   const { data: expenses } = useQuery({ queryKey: ["expenses", "all"], queryFn: () => api<Expense[]>("/expenses") });
 
@@ -141,7 +137,7 @@ function Dashboard() {
             const color = colorFor(c.color);
             const agg = byCat.get(c.id);
             return (
-              <Link key={c.id} to="/category/$slug" params={{ slug: c.slug }}
+              <Link key={c.id} to={`/category/${c.slug}`}
                 className="group glass-card rounded-2xl p-5 hover:shadow-[var(--shadow-glow)] transition-shadow">
                 <div className="flex items-start justify-between">
                   <div className={`grid h-11 w-11 place-items-center rounded-xl ring-1 ${color.bg} ${color.text} ${color.ring}`}>

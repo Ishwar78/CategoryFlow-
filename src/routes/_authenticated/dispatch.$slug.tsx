@@ -1,6 +1,6 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { Link, useParams, Navigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@/lib/query";
-import { api, fileUrl, type Category, type Expense } from "@/lib/api";
+import { api, type Category, type Expense } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
 import { useMemo, useState } from "react";
 import { inr, fmtDate } from "@/lib/format";
@@ -11,14 +11,10 @@ import { ArrowLeft, Search, Pencil, Trash2, Truck, Plus, FileDown, FileSpreadshe
 import { toast } from "sonner";
 import { exportExpensesToPDF, exportExpensesToExcel } from "@/lib/exports";
 
-export const Route = createFileRoute("/_authenticated/dispatch/$slug")({
-  component: DispatchPage,
-});
-
 const PAGE_SIZE = 15;
 
-function DispatchPage() {
-  const { slug } = Route.useParams();
+export default function DispatchPage() {
+  const { slug } = useParams<{ slug: string }>();
   const { user } = useAuth();
   const qc = useQueryClient();
   const [q, setQ] = useState("");
@@ -31,7 +27,7 @@ function DispatchPage() {
 
   const { data: cats } = useQuery({ queryKey: ["categories"], queryFn: () => api<Category[]>("/categories") });
   const category = cats?.find((c) => c.slug === slug);
-  if (cats && !category) throw notFound();
+  if (cats && !category) return <Navigate to="/dashboard" replace />;
 
   const { data: expenses } = useQuery({
     queryKey: ["expenses", category?.id],
@@ -50,8 +46,6 @@ function DispatchPage() {
   const filtered = useMemo(() => {
     if (!expenses) return [];
     let list = expenses.filter((e) => {
-      // Only show items that have been allotted OR match search
-      // Let's show all items so users can allot them from this screen
       if (status !== "all" && e.status !== status) return false;
       if (q && !`${e.item_name} ${e.allotted_to ?? ""} ${e.description ?? ""}`.toLowerCase().includes(q.toLowerCase())) return false;
       if (allottedTo && !(e.allotted_to || "").toLowerCase().includes(allottedTo.toLowerCase())) return false;
@@ -79,7 +73,7 @@ function DispatchPage() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-3">
-          <Link to="/category/$slug" params={{ slug }} className="rounded-md p-2 hover:bg-accent"><ArrowLeft className="h-4 w-4" /></Link>
+          <Link to={`/category/${slug}`} className="rounded-md p-2 hover:bg-accent"><ArrowLeft className="h-4 w-4" /></Link>
           <div className={`grid h-10 w-10 place-items-center rounded-lg ring-1 ${color.bg} ${color.text} ${color.ring}`}><Truck className="h-5 w-5" /></div>
           <div>
             <h1 className="text-2xl font-semibold tracking-tight">{category.name} — Dispatch</h1>

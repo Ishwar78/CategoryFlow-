@@ -1,4 +1,4 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { Link, useParams, Navigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@/lib/query";
 import { api, fileUrl, type Category, type Expense } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
@@ -7,18 +7,12 @@ import { inr, fmtDate } from "@/lib/format";
 import { iconFor, colorFor } from "@/lib/categories";
 import { AddExpenseDialog } from "@/components/AddExpenseDialog";
 import { StatusBadge } from "@/components/StatusBadge";
-import { ArrowLeft, Search, Pencil, Trash2, FileText, Plus, FileDown, FileSpreadsheet, Check, X } from "lucide-react";
+import { ArrowLeft, Search, Pencil, Trash2, FileText, Plus, FileDown, FileSpreadsheet } from "lucide-react";
 import { toast } from "sonner";
 import { exportExpensesToPDF, exportExpensesToExcel } from "@/lib/exports";
 
-export const Route = createFileRoute("/_authenticated/items/$slug")({
-  component: ItemsPage,
-});
-
-const PAGE_SIZE = 15;
-
-function ItemsPage() {
-  const { slug } = Route.useParams();
+export default function ItemsPage() {
+  const { slug } = useParams<{ slug: string }>();
   const { user } = useAuth();
   const qc = useQueryClient();
   const [q, setQ] = useState("");
@@ -30,10 +24,11 @@ function ItemsPage() {
   const [editing, setEditing] = useState<Expense | null>(null);
   const [openAdd, setOpenAdd] = useState(false);
   const [page, setPage] = useState(1);
+  const PAGE_SIZE = 15;
 
   const { data: cats } = useQuery({ queryKey: ["categories"], queryFn: () => api<Category[]>("/categories") });
   const category = cats?.find((c) => c.slug === slug);
-  if (cats && !category) throw notFound();
+  if (cats && !category) return <Navigate to="/dashboard" replace />;
 
   const { data: expenses } = useQuery({
     queryKey: ["expenses", category?.id],
@@ -76,13 +71,12 @@ function ItemsPage() {
   if (!category || !expenses) return <div className="text-muted-foreground">Loading…</div>;
   const Icon = iconFor(category.icon);
   const color = colorFor(category.color);
-  const isAdmin = user?.role === "admin";
 
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-3">
-          <Link to="/category/$slug" params={{ slug }} className="rounded-md p-2 hover:bg-accent"><ArrowLeft className="h-4 w-4" /></Link>
+          <Link to={`/category/${slug}`} className="rounded-md p-2 hover:bg-accent"><ArrowLeft className="h-4 w-4" /></Link>
           <div className={`grid h-10 w-10 place-items-center rounded-lg ring-1 ${color.bg} ${color.text} ${color.ring}`}><Icon className="h-5 w-5" /></div>
           <div>
             <h1 className="text-2xl font-semibold tracking-tight">{category.name} — All Items</h1>

@@ -1,4 +1,4 @@
-import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { LayoutDashboard, LogOut, Sparkles, Menu, X, CheckSquare } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { useAuth } from "@/lib/auth";
@@ -10,7 +10,8 @@ export function AppShell({ children }: { children: ReactNode }) {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
-  const path = useRouterState({ select: (s) => s.location.pathname });
+  const location = useLocation();
+  const path = location.pathname;
 
   const { data: cats } = useQuery({
     queryKey: ["categories"],
@@ -40,7 +41,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             const Icon = iconFor(c.icon);
             const active = path.includes(`/category/${c.slug}`) || path.includes(`/items/${c.slug}`);
             return (
-              <NavItem key={c.id} to="/category/$slug" params={{ slug: c.slug }} icon={<Icon className="h-4 w-4" />} active={active}>
+              <NavItem key={c.id} to={`/category/${c.slug}`} icon={<Icon className="h-4 w-4" />} active={active}>
                 {c.name}
               </NavItem>
             );
@@ -56,7 +57,7 @@ export function AppShell({ children }: { children: ReactNode }) {
               <div className="truncate text-sm font-medium">{user?.display_name || user?.email}</div>
               <div className="truncate text-[11px] text-muted-foreground capitalize">{user?.role}</div>
             </div>
-            <button onClick={() => { signOut(); navigate({ to: "/" }); }} className="rounded-md p-2 hover:bg-accent" title="Sign out">
+            <button onClick={() => { signOut(); navigate("/"); }} className="rounded-md p-2 hover:bg-accent" title="Sign out">
               <LogOut className="h-4 w-4" />
             </button>
           </div>
@@ -78,9 +79,9 @@ export function AppShell({ children }: { children: ReactNode }) {
   );
 }
 
-function NavItem({ to, params, icon, active, children }: any) {
+function NavItem({ to, icon, active, children }: any) {
   return (
-    <Link to={to} params={params}
+    <Link to={to}
       className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition ${
         active ? "gradient-bg text-primary-foreground shadow-[var(--shadow-glow)]" : "hover:bg-accent text-foreground/80"
       }`}>

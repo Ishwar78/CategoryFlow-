@@ -1,14 +1,10 @@
-import { createFileRoute, useNavigate, Link, Navigate } from "@tanstack/react-router";
+import { useNavigate, Link, Navigate } from "react-router-dom";
 import { useState, type FormEvent } from "react";
 import { useAuth } from "@/lib/auth";
 import { Sparkles, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/login")({
-  component: LoginPage,
-});
-
-function LoginPage() {
+export default function LoginPage() {
   const { user, loading, signIn, signUp } = useAuth();
   const navigate = useNavigate();
   const [mode, setMode] = useState<"signin" | "signup">("signin");
@@ -31,7 +27,7 @@ function LoginPage() {
         await signIn(email, password);
         toast.success("Welcome back!");
       }
-      navigate({ to: "/dashboard" });
+      navigate("/dashboard");
     } catch (err: any) {
       toast.error(err.message || "Authentication failed");
     } finally {

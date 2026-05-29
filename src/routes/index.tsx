@@ -1,12 +1,8 @@
-import { createFileRoute, Link, Navigate } from "@tanstack/react-router";
+import { Link, Navigate } from "react-router-dom";
 import { useAuth } from "@/lib/auth";
 import { Sparkles, BarChart3, Wallet, ShieldCheck, ArrowRight } from "lucide-react";
 
-export const Route = createFileRoute("/")({
-  component: Landing,
-});
-
-function Landing() {
+export default function Landing() {
   const { user, loading } = useAuth();
   if (loading) return <div className="min-h-screen" />;
   if (user) return <Navigate to="/dashboard" />;

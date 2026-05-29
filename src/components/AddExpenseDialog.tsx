@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useMutation, useQueryClient } from "@/lib/query";
 import { api, type Expense } from "@/lib/api";
-import { useServerFn } from "@tanstack/react-start";
 import { ocrBill } from "@/lib/ocr.functions";
 import { toast } from "sonner";
 import { Loader2, Upload, X, ScanLine } from "lucide-react";
@@ -16,7 +15,6 @@ interface Props {
 
 export function AddExpenseDialog({ open, onClose, categoryId, categoryName, editing }: Props) {
   const qc = useQueryClient();
-  const runOcr = useServerFn(ocrBill);
   const [form, setForm] = useState({
     item_name: "", quantity: "1", price: "", vendor: "", description: "",
     purchase_date: new Date().toISOString().slice(0, 10), payment_method: "cash",
@@ -50,7 +48,7 @@ export function AddExpenseDialog({ open, onClose, categoryId, categoryName, edit
         r.onerror = reject;
         r.readAsDataURL(file);
       });
-      const result = await runOcr({ data: { data_url } });
+      const result = await ocrBill({ data: { data_url } });
       if (!result.ok) { toast.error(result.error); return; }
       const f = result.fields;
       setForm((cur) => ({

@@ -1,15 +1,11 @@
-import { createFileRoute, Navigate } from "@tanstack/react-router";
+import { Navigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@/lib/query";
 import { api, type AppUser } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
 import { Check, X, Users, UserCheck } from "lucide-react";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/_authenticated/approvals")({
-  component: ApprovalsPage,
-});
-
-function ApprovalsPage() {
+export default function ApprovalsPage() {
   const { user } = useAuth();
   const qc = useQueryClient();
   

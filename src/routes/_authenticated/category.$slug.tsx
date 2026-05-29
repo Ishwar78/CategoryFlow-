@@ -1,4 +1,4 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { Link, useParams, Navigate } from "react-router-dom";
 import { useQuery } from "@/lib/query";
 import { api, type Category, type Expense } from "@/lib/api";
 import { iconFor, colorFor } from "@/lib/categories";
@@ -10,17 +10,13 @@ import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Toolti
 import { exportExpensesToPDF, exportExpensesToExcel } from "@/lib/exports";
 import { StatusBadge } from "@/components/StatusBadge";
 
-export const Route = createFileRoute("/_authenticated/category/$slug")({
-  component: CategoryPage,
-});
-
-function CategoryPage() {
-  const { slug } = Route.useParams();
+export default function CategoryPage() {
+  const { slug } = useParams<{ slug: string }>();
   const [open, setOpen] = useState(false);
 
   const { data: cats } = useQuery({ queryKey: ["categories"], queryFn: () => api<Category[]>("/categories") });
   const category = cats?.find((c) => c.slug === slug);
-  if (cats && !category) throw notFound();
+  if (cats && !category) return <Navigate to="/dashboard" replace />;
 
   const { data: expenses } = useQuery({
     queryKey: ["expenses", category?.id],
@@ -76,11 +72,11 @@ function CategoryPage() {
             className="inline-flex items-center gap-2 rounded-lg border bg-card px-3 py-2 text-sm hover:bg-accent">
             <FileSpreadsheet className="h-4 w-4" /> Excel
           </button>
-          <Link to="/dispatch/$slug" params={{ slug }}
+          <Link to={`/dispatch/${slug}`}
             className="inline-flex items-center gap-2 rounded-lg border bg-card px-4 py-2 text-sm font-medium hover:bg-accent">
             <Truck className="h-4 w-4" /> Dispatch
           </Link>
-          <Link to="/items/$slug" params={{ slug }}
+          <Link to={`/items/${slug}`}
             className="inline-flex items-center gap-2 rounded-lg border bg-card px-4 py-2 text-sm font-medium hover:bg-accent">
             <ListOrdered className="h-4 w-4" /> View All Items
           </Link>
